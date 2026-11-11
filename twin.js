@@ -107,8 +107,6 @@ export class Twin {
         if (z.region === 'hand') { const f = new THREE.Mesh(new THREE.BoxGeometry(w, d, h), new THREE.MeshBasicMaterial({ color: 0xe57183, transparent: true, opacity: 0.12, depthWrite: false })); f.position.copy(edges.position); g.add(f); }
       } else if (z.kind === 'spheres') {
         for (const c of z.cs) {
-          const s = new THREE.Mesh(new THREE.SphereGeometry(z.R, 40, 24), new THREE.MeshBasicMaterial({ color: 0xf2a93b, transparent: true, opacity: 0.025, depthWrite: false }));
-          s.position.set(c[0], c[1], c[2]); g.add(s);
           const rb = Math.sqrt(Math.max(0, z.R * z.R - c[2] * c[2])); // footprint on the bench top
           const disc = new THREE.Mesh(new THREE.CircleGeometry(rb, 96), new THREE.MeshBasicMaterial({ color: 0xf2a93b, transparent: true, opacity: 0.07, depthWrite: false }));
           disc.position.set(c[0], c[1], 0.003); g.add(disc);
