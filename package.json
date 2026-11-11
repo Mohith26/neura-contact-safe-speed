@@ -1,0 +1,11 @@
+{
+  "name": "neura-contact-safe-speed",
+  "private": true,
+  "type": "module",
+  "description": "ISO/TS 15066 contact-safe speed planning for NEURA MAiRA (concept feature for Neuron Suite)",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "build:data": "node scripts/build-results.mjs"
+  },
+  "license": "MIT"
+}

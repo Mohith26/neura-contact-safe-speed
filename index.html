@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Contact-safe speed · Neuron Suite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Concept feature for NEURA Robotics' Neuron Suite: ISO/TS 15066 body-region speed limits planned into a time-optimal MAiRA trajectory." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2322262b'/%3E%3Ctext x='7' y='23' font-family='Helvetica' font-weight='700' font-size='19' fill='white'%3EN%3C/text%3E%3Ccircle cx='24' cy='21' r='2.6' fill='%233653ED'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>window.__errors = []; addEventListener("error", (e) => __errors.push(String(e.message))); addEventListener("unhandledrejection", (e) => __errors.push(String(e.reason)));</script>
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+  </script>
+</head>
+<body>
+  <div class="app">
+    <nav class="rail" aria-label="Neuraverse">
+      <div class="logo" aria-label="Neuraverse">N<i>.</i></div>
+      <a href="#" title="Dashboard" aria-label="Dashboard" data-ic="grid"></a>
+      <a href="#" title="Asset library" aria-label="Asset library" data-ic="layers"></a>
+      <a href="#" title="Creator Hub" aria-label="Creator Hub" data-ic="box"></a>
+      <a href="#" class="on" title="Neuron Suite" aria-label="Neuron Suite" aria-current="page" data-ic="layout"></a>
+      <a href="#" title="AI models" aria-label="AI models" data-ic="magic"></a>
+      <div class="sep"></div>
+      <a href="#" title="Account" aria-label="Account" data-ic="user"></a>
+      <div class="grow"></div>
+      <a href="#" title="Collapse sidebar" aria-label="Collapse sidebar" data-ic="sidebar"></a>
+    </nav>
+    <header class="top">
+      <div class="lang">EN <span data-ic="down" data-s="14"></span></div>
+      <div class="vsep"></div>
+      <button class="tb" aria-label="Apps" data-ic="apps"></button>
+      <button class="tb" aria-label="Notifications" data-ic="bell"></button>
+      <button class="tb" id="kbdBtn" aria-label="Keyboard shortcuts" data-ic="keyboard"></button>
+      <div class="avatar" aria-label="Signed in user">MG</div>
+    </header>
+    <main class="main" id="main">
+      <div class="crumb">Neuron Suite <span>/</span> Projects <span>/</span> <b id="crumbTask">Gearbox kitting cell</b></div>
+      <div class="ph">
+        <button class="back" aria-label="Back to projects" data-ic="back"></button>
+        <h1 id="title">Gearbox kitting cell</h1>
+        <span class="status" id="status"><span class="d"></span><span id="statusText">Draft</span></span>
+        <div class="sp"></div>
+        <div class="chips" role="tablist" aria-label="Project views">
+          <button class="chip hide-sm" role="tab">Scene builder</button>
+          <button class="chip" role="tab">Node graph</button>
+          <button class="chip on" role="tab" aria-selected="true">Contact-safe speed <span class="new">New</span></button>
+          <button class="chip hide-sm" role="tab">Monitoring</button>
+        </div>
+        <div class="vbar"></div>
+        <button class="iconbtn" id="exportJson" title="Export JSON (J)" aria-label="Export JSON" data-ic="exportSq"></button>
+        <button class="iconbtn" id="exportCsv" title="Export CSV (E)" aria-label="Export CSV" data-ic="download"></button>
+        <button class="iconbtn" id="copyLink" title="Copy deep link" aria-label="Copy deep link" data-ic="copy"></button>
+        <div class="vbar"></div>
+        <button class="btn" id="revertBtn">Save configuration <span data-ic="down" data-s="14"></span></button>
+        <button class="btn primary" id="applyBtn">Apply to program</button>
+      </div>
+
+      <div class="banner" id="banner" role="alert"><span data-ic="danger"></span><span id="bannerText"></span></div>
+
+      <div class="grid1">
+        <section class="card twin" aria-label="Digital twin">
+          <div id="twin" style="position:absolute;inset:0"></div>
+          <div class="overlay">
+            <div class="ttl"><b>Digital twin · MAiRA 7M</b><span id="twinSub">ISO/TS 15066 body regions from the operator position</span></div>
+            <div class="legend" aria-label="Path legend">
+              <span><i style="background:#6687f4"></i>Robot-only</span>
+              <span><i style="background:#f2a93b"></i>Transient contact</span>
+              <span><i style="background:#e57183"></i>Clamping</span>
+            </div>
+          </div>
+          <div class="player">
+            <button class="pb" id="play" aria-label="Play (Space)" data-ic="play" data-s="16"></button>
+            <div class="seg" id="stratSeg" role="radiogroup" aria-label="Trajectory shown"></div>
+            <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Timeline" />
+            <span class="time" id="time">0.00 / 0.00 s</span>
+          </div>
+        </section>
+
+        <aside style="display:grid;gap:16px;align-content:start">
+          <section class="card" aria-label="Cycle time">
+            <div class="busy" id="busyK"><div><div class="spin"></div>Re-planning…</div></div>
+            <div class="hd"><h2>Cycle time</h2><span class="sub" id="kSub">per kit, incl. gripper actions</span></div>
+            <div class="kpi">
+              <div class="big"><b id="kBig">–</b><span>s with contact-safe speed</span></div>
+              <div class="delta" id="kDelta">&nbsp;</div>
+              <div class="bars" id="bars"></div>
+              <div class="facts">
+                <div class="fact ok" id="fViol"><b>–</b><span>contact-limit violations (4× verifier)</span></div>
+                <div class="fact" id="fRate"><b>–</b><span>cycles per hour</span></div>
+              </div>
+            </div>
+          </section>
+          <section class="card" aria-label="What-if">
+            <div class="busy" id="busyW"></div>
+            <div class="hd"><h2>What-if</h2><span class="sub">re-plans in the browser</span></div>
+            <div class="whatif">
+              <div class="field"><label for="task">Task</label>
+                <select class="sel" id="task"><option value="kitting">Gearbox kitting</option><option value="handover">Hand-over to operator</option></select></div>
+              <div class="field"><label for="opx">Operator distance from robot base <output id="opxO"></output></label>
+                <input type="range" id="opx" min="1.00" max="1.70" step="0.01" /></div>
+              <div class="field"><label for="opy">Operator lateral offset <output id="opyO"></output></label>
+                <input type="range" id="opy" min="-0.40" max="0.40" step="0.01" /></div>
+              <div class="field"><label for="payload">Payload <output id="payloadO"></output></label>
+                <input type="range" id="payload" min="0" max="12" step="1" /></div>
+              <div class="field"><label>Robot effective mass</label>
+                <div class="seg" id="massSeg" role="radiogroup" aria-label="Robot effective mass model" style="width:100%;display:flex">
+                  <button data-v="max" style="flex:1">Conservative</button><button data-v="iso" style="flex:1">ISO A.3.2</button><button data-v="reflected" style="flex:1">Reflected</button>
+                </div></div>
+              <div class="toggle"><span>Clamping against the bench (quasi-static)</span><button class="sw" id="clamp" role="switch" aria-label="Clamping against the bench"></button></div>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <section class="card chartcard" aria-label="Speed profile">
+        <div class="busy" id="busyC"></div>
+        <div class="hd"><h2>TCP speed profile</h2><span class="sub" id="cSub"></span><div class="sp"></div>
+          <div class="legend" style="margin:0;padding:6px 10px">
+            <span><i style="background:#6d87eb"></i>Planned</span><span><i style="background:#9aa1ab"></i>Contact limit at TCP</span><span><i style="background:#f2c12e"></i>Cobot speed 250 mm/s</span>
+          </div></div>
+        <div class="chart" id="chart"><svg id="chartSvg" role="img" aria-label="TCP speed over time"></svg><div class="tip" id="tip"></div></div>
+      </section>
+
+      <section class="card tablecard" aria-label="Segments">
+        <div class="hd"><h2>Segments</h2><span class="sub" id="tSub"></span><div class="sp"></div>
+          <div class="tfilters chips" id="tfilters">
+            <button class="chip on" data-f="all">All</button><button class="chip" data-f="transient">Transient</button><button class="chip" data-f="quasi-static">Clamping</button><button class="chip" data-f="free">Robot-only</button>
+          </div></div>
+        <div id="tableWrap"></div>
+      </section>
+
+      <div class="foot"><span>Unofficial concept demo by Mohith Gajjela. Not affiliated with NEURA Robotics. Robot model: NEURA's published MAiRA 7M description (neura-rtb-data); limits: ISO/TS 15066:2016 Annex A; cell and task are synthetic.</span><span><a href="https://github.com/Mohith26/neura-contact-safe-speed" style="color:inherit">Source</a></span></div>
+    </main>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+  <aside class="drawer" id="drawer" aria-label="Segment detail" aria-hidden="true"></aside>
+  <div class="modal" id="applyModal" role="dialog" aria-modal="true" aria-labelledby="applyH"><div class="box">
+    <h3 id="applyH">Apply contact-safe speeds to the program?</h3>
+    <p id="applyP"></p>
+    <div class="history" id="history"></div>
+    <div class="row"><button class="btn" data-close>Cancel</button><button class="btn primary" id="applyConfirm">Apply</button></div>
+  </div></div>
+  <div class="modal" id="keysModal" role="dialog" aria-modal="true" aria-labelledby="keysH"><div class="box">
+    <h3 id="keysH">Keyboard shortcuts</h3>
+    <div class="keys" style="margin-top:12px">
+      <kbd>Space</kbd><span>Play / pause</span><kbd>← →</kbd><span>Step 0.1 s</span><kbd>1–4</kbd><span>Show contact-safe / single limit / cobot / full speed</span>
+      <kbd>[ ]</kbd><span>Previous / next segment</span><kbd>A</kbd><span>Apply to program</span><kbd>E</kbd><span>Export CSV</span><kbd>J</kbd><span>Export JSON</span><kbd>Esc</kbd><span>Close panel</span><kbd>?</kbd><span>This list</span>
+    </div>
+    <div class="row"><button class="btn" data-close>Close</button></div>
+  </div></div>
+  <div class="toast" id="toast"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
